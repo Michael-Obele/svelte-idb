@@ -52,3 +52,8 @@ _Refer to `docs/sveltekit-idb-library/08-implementation-roadmap.md` for the gran
 - Use `npm run build` to package the library via `@sveltejs/package`.
 - Exports are defined in `package.json`. Sub-path exports should be configured for both `.` (core) and `./svelte` (reactive) to support clean imports.
 - **Source Maps**: The `files` array in `package.json` should include `"src/lib"` (alongside `"dist"`) to support "Go to Definition" in consumers' editors.
+
+## 🎨 Design & Icons
+
+- **Icons**: Always use the scoped `@lucide/svelte` package for icons (install as a dev dependency). Never use `lucide-svelte`.
+- **Styling**: Favor custom CSS within components or Tailwind CSS if available. Maintain a consistent dark mode aesthetic for all showcase components.
