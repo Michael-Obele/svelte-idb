@@ -38,7 +38,7 @@ The project aims for a fast-paced implementation of the following phases. Do not
 - **Phase 3: DX Polish** — Query builder (`where().equals()`), transactions, bulk operations, debug mode, lifecycle hooks.
 - **Phase 4: v1.0 Release** — Documentation, demo site, npm publishing, cleanup.
 
-*Refer to `docs/sveltekit-idb-library/08-implementation-roadmap.md` for the granular task list.*
+_Refer to `docs/sveltekit-idb-library/08-implementation-roadmap.md` for the granular task list._
 
 ## 🧪 Testing
 
