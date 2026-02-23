@@ -1,0 +1,24 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Required for Provenance and Trusted Publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # Required for latest Trusted Publishing features (Nov 2025/Feb 2026)
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm install --no-package-lock --allow-git=none # Added --allow-git=none as per Feb 18, 2026 security guidelines
+      - run: npm run build
+
+      - run: npm publish --provenance --access public
