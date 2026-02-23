@@ -1,6 +1,6 @@
 {
 	"name": "svelte-idb",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Zero-dependency, SSR-safe, Svelte 5 runes-native IndexedDB wrapper",
 	"license": "MIT",
 	"type": "module",
