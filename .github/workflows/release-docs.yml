@@ -1,0 +1,38 @@
+name: Release Documentation Version
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'docs/**'
+      - '.github/release-docs-config.json'
+      - '.github/workflows/release-docs.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: .github/release-docs-config.json
+          manifest-file: .release-please-manifest-docs.json
+          target-branch: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug Release Output
+        if: always()
+        run: |
+          echo "Release created: ${{ steps.release.outputs.release_created }}"
+          echo "Tag name: ${{ steps.release.outputs.tag_name }}"
+          echo "Releases JSON: ${{ steps.release.outputs.releases_created }}"
