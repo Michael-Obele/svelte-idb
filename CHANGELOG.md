@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.1...svelte-idb-v0.1.2) (2026-02-23)
+
+
+### Bug Fixes
+
+* align docs manifest version to match current package version (0.1.1-doc.0) ([c4bbd92](https://github.com/Michael-Obele/svelte-idb/commit/c4bbd92daa79fc26129b70ceecb34523e9b603f5))
+
 ## [0.1.1](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.0...svelte-idb-v0.1.1) (2026-02-23)
 
 
