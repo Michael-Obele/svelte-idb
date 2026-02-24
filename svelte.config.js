@@ -11,7 +11,9 @@ const config = {
 			"$lib": "./src/lib",
 			"$lib/*": "./src/lib/*",
 			"$ui": "./src/routes/ui",
-			"$ui/*": "./src/routes/ui/*"
+			"$ui/*": "./src/routes/ui/*",
+			"$components": "./src/routes/docs/_components",
+			"$components/*": "./src/routes/docs/_components/*"
 		}
 	}
 };
