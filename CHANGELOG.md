@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.3](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.2...svelte-idb-v0.1.3) (2026-02-24)
+
+
+### Features
+
+* add accordion, badge, button, card, scroll area, separator, sheet, and tabs components ([1f91f3a](https://github.com/Michael-Obele/svelte-idb/commit/1f91f3ad50f19801b902af47a568a0004cfdbb74))
+* add component aliases for improved path resolution in svelte.config.js ([d153a1f](https://github.com/Michael-Obele/svelte-idb/commit/d153a1f10ca9bfe8400ed90f4ba3769be2a69d32))
+* add shiki-block-svelte dependency to package.json and bun.lock ([0a32de9](https://github.com/Michael-Obele/svelte-idb/commit/0a32de98e20857b61294b22706ac0716b495602e))
+* **docs:** add sidebar component and documentation data structure ([efe335d](https://github.com/Michael-Obele/svelte-idb/commit/efe335d1cb905834b5a8d7ac3bab5b6421c7e7cb))
+* enhance layout styles with dark mode support and additional CSS variables ([916066c](https://github.com/Michael-Obele/svelte-idb/commit/916066cb7646604e6e3a6c1cb76d88717a98e975))
+* implement npm version fetching and display in the UI ([6e69659](https://github.com/Michael-Obele/svelte-idb/commit/6e69659adee7735a919327ef8cf5d51a23b680a2))
+* update dependencies and add components configuration ([42abdba](https://github.com/Michael-Obele/svelte-idb/commit/42abdba750ad1e09987527cd75c8e4226b7c98a2))
+* wrap children rendering in a div for consistent layout structure ([cafa3a4](https://github.com/Michael-Obele/svelte-idb/commit/cafa3a49cfce56c8aa2a12d5ed7946a4d3d1d41d))
+
 ## [0.1.2](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.1...svelte-idb-v0.1.2) (2026-02-23)
 
 
