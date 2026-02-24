@@ -1,9 +1,27 @@
 <div align="center">
   <h1>🗄️ svelte-idb</h1>
   <p><strong>Zero-dependency, SSR-safe, Svelte 5 runes-native IndexedDB wrapper</strong></p>
-  
-  [![npm version](https://badge.fury.io/js/svelte-idb.svg)](https://badge.fury.io/js/svelte-idb)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+
+  <p>
+    <a href="https://www.npmjs.com/package/svelte-idb">
+      <img src="https://img.shields.io/npm/v/svelte-idb?style=flat-square&color=ff3e00&label=npm" alt="npm version" />
+    </a>
+    <a href="https://bundlephobia.com/package/svelte-idb">
+      <img src="https://img.shields.io/bundlephobia/minzip/svelte-idb?style=flat-square&color=33b5e5&label=minzipped" alt="bundle size" />
+    </a>
+    <a href="https://www.npmjs.com/package/svelte-idb">
+      <img src="https://img.shields.io/npm/dm/svelte-idb?style=flat-square&color=cb3837&label=downloads" alt="downloads" />
+    </a>
+    <a href="https://github.com/Michael-Obele/svelte-idb">
+      <img src="https://img.shields.io/github/stars/Michael-Obele/svelte-idb?style=flat-square&color=ffd700" alt="github stars" />
+    </a>
+    <a href="https://svelte.dev">
+      <img src="https://img.shields.io/badge/svelte-%5E5.0.0-ff3e00?style=flat-square&logo=svelte" alt="svelte compatibility" />
+    </a>
+    <a href="https://github.com/Michael-Obele/svelte-idb/blob/master/LICENSE">
+      <img src="https://img.shields.io/github/license/Michael-Obele/svelte-idb?style=flat-square&color=purple" alt="license" />
+    </a>
+  </p>
 </div>
 
 <br />
@@ -12,11 +30,12 @@
 
 ## ✨ Features
 
-- **⚡️ Svelte 5 Native:** Built from the ground up using `$state` runes for seamless, glitch-free reactivity.
-- **🛡️ SSR Safe:** Safely use it in SvelteKit SSR environments (`+page.server.ts` or `+layout.ts`). Automatically no-ops or throws based on your config.
-- **🎈 Zero Dependencies:** Extremely lightweight. No external libraries, just pure modern browser APIs.
-- **🏷️ Fully Typed:** First-class TypeScript support. Define your schema once and enjoy autocomplete everywhere.
-- **🔄 Live Queries:** Never manually re-fetch data. Mutations (`add`, `put`, `delete`) automatically trigger microtask-batched DOM updates.
+- **⚡️ Svelte 5 Runes Native:** Built from the ground up using `$state` and `$derived` for seamless, glitch-free reactivity.
+- **🛡️ SSR Safe By Design:** Safely use it in SvelteKit SSR environments. Automatically no-ops or uses safe defaults on the server.
+- **🎈 Tiny & Zero-Dependency:** Less than 2KB minzipped. No external libraries, just pure modern browser APIs.
+- **🏷️ First-Class TypeScript:** Define your schema once and enjoy type-safe queries, stores, and autocomplete everywhere.
+- **🔄 Automatic Live Queries:** Mutations (`add`, `put`, `delete`, `clear`) automatically trigger microtask-batched reactivity for optimal performance.
+- **🧩 Dual Exports:** Clean Separation between core logic and Svelte-specific reactive hooks.
 
 ---
 
@@ -140,7 +159,7 @@ All standard mutations automatically notify active LiveQueries to trigger Svelte
 ## 🛠️ Advanced
 
 ### Secondary Indexes
-You can define secondary indexes in your schema to enable querying by properties other than the primary key. *(Note: Reactive `liveQueryByIndex` is coming in Phase 3!)*
+You can define secondary indexes in your schema to enable querying by properties other than the primary key.
 
 ```typescript
 const db = createReactiveDB({
@@ -161,6 +180,8 @@ const db = createReactiveDB({
 const adults = await db.users.getAllFromIndex('byAge', IDBKeyRange.lowerBound(18));
 ```
 
+*(Note: Reactive `liveQueryByIndex` is coming in Phase 3!)*
+
 ### SSR Safety
 Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) will safely "no-op" by default instead of crashing with `window is not defined`. 
 - `liveAll().current` will cleanly return an empty array `[]` on the server.
@@ -169,5 +190,13 @@ Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) wi
 
 ---
 
+## 🔮 Roadmap
+
+- [ ] **Query Builder:** Chainable query API (`where(index).equals(value)`).
+- [ ] **Transactions:** Multi-store atomic operations with auto-rollback.
+- [ ] **Bulk Operations:** `addMany`, `putMany`, and `deleteMany`.
+- [ ] **Cross-tab Sync:** Automatic reactivity across different browser tabs using `BroadcastChannel`.
+- [ ] **Migration Sugar:** Simplified API for adding columns or renaming stores.
+
 ## 📄 License
-MIT © Michael Obele
+MIT © [Michael Obele](https://github.com/Michael-Obele)
