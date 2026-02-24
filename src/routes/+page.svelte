@@ -13,6 +13,8 @@
 		ExternalLink
 	} from '@lucide/svelte';
 
+	let { data } = $props();
+
 	interface Note {
 		id?: number;
 		title: string;
@@ -94,7 +96,7 @@
 		<div
 			class="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-sm font-semibold text-sky-400"
 		>
-			v0.1.0
+			v{data.npmVersion}
 		</div>
 		<h1
 			class="bg-linear-to-br from-sky-400 to-purple-500 bg-clip-text text-6xl font-bold tracking-tight text-transparent"
