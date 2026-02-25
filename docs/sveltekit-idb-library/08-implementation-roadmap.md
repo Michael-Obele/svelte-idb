@@ -177,14 +177,6 @@ await db.users.delete(id);
 | `.svelte.ts` compilation issues    | Medium     | Medium | Test with latest `@sveltejs/package`                |
 | `vitest/browser` incompatibilities | Low        | Medium | Ensure headless Playwright instance runs fine in CI |
 
----
-
-## Success Metrics
-
-| Metric                     | Target at 3 months            |
-| -------------------------- | ----------------------------- |
-| Bundle size                | < 5KB min+gz                  |
-| Documentation completeness | Full API reference + examples |
 
 ---
 
