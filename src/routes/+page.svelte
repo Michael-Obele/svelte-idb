@@ -37,7 +37,10 @@
 		PenTool,
 		Pin,
 		PinOff,
-		LayoutGrid
+		LayoutGrid,
+		Pencil,
+		Save,
+		X
 	} from '@lucide/svelte';
 
 	let { data } = $props();
@@ -134,6 +137,37 @@
 
 	async function clearAll() {
 		await db.notes.clear();
+	}
+
+	// Edit State
+	let editingNote = $state<Note | null>(null);
+	let editTitle = $state('');
+	let editContent = $state('');
+
+	function openEdit(note: Note) {
+		editingNote = note;
+		editTitle = note.title;
+		editContent = note.content;
+	}
+
+	function cancelEdit() {
+		editingNote = null;
+		editTitle = '';
+		editContent = '';
+	}
+
+	async function saveEdit() {
+		if (!editingNote || !editingNote.id) return;
+
+		const updatedNote = {
+			...editingNote,
+			title: editTitle.trim(),
+			content: editContent.trim()
+			// Keep original fields
+		};
+
+		await db.notes.put(updatedNote);
+		cancelEdit();
 	}
 
 	let copied = $state(false);
@@ -719,6 +753,13 @@ const db = createReactiveDB({
 												<Pin size={13} class={note.pinned ? 'fill-current' : ''} />
 											</button>
 											<button
+												class="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300"
+												onclick={() => openEdit(note)}
+												title="Edit"
+											>
+												<Pencil size={13} />
+											</button>
+											<button
 												class="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-red-500/10 hover:text-red-400"
 												onclick={() => deleteNote(note.id!)}
 												title="Delete"
@@ -813,6 +854,64 @@ const db = createReactiveDB({
 	>
 		Built with <Heart size={14} class="fill-red-500 text-red-500" /> for the Svelte community.
 	</footer>
+	<!-- Edit Modal -->
+	{#if editingNote}
+		<div
+			class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+			transition:fade={{ duration: 200 }}
+		>
+			<div
+				class="w-full max-w-lg overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-2xl"
+				transition:scale={{ duration: 200, start: 0.95 }}
+				role="dialog"
+				aria-modal="true"
+			>
+				<div class="flex items-center justify-between border-b border-slate-800 px-6 py-4">
+					<h3 class="text-lg font-semibold text-slate-200">Edit Note</h3>
+					<button
+						onclick={cancelEdit}
+						class="rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200"
+					>
+						<X size={20} />
+					</button>
+				</div>
+
+				<div class="space-y-4 p-6">
+					<div class="space-y-2">
+						<label for="edit-title" class="text-sm font-medium text-slate-400">Title</label>
+						<Input
+							id="edit-title"
+							bind:value={editTitle}
+							placeholder="Note title"
+							class="border-slate-800 bg-slate-900 focus:ring-sky-500/20"
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<label for="edit-content" class="text-sm font-medium text-slate-400">Content</label>
+						<Textarea
+							id="edit-content"
+							bind:value={editContent}
+							placeholder="Write your note..."
+							class="min-h-[150px] resize-none border-slate-800 bg-slate-900 focus:ring-sky-500/20"
+						/>
+					</div>
+				</div>
+
+				<div
+					class="flex items-center justify-end gap-3 border-t border-slate-800 bg-slate-900/30 px-6 py-4"
+				>
+					<Button variant="ghost" onclick={cancelEdit} class="text-slate-400 hover:text-slate-200">
+						Cancel
+					</Button>
+					<Button onclick={saveEdit} class="bg-sky-500 text-white hover:bg-sky-600">
+						<Save size={16} class="mr-2" />
+						Save Changes
+					</Button>
+				</div>
+			</div>
+		</div>
+	{/if}
 </main>
 
 <style>
