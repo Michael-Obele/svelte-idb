@@ -3,6 +3,8 @@
 	import type { ILiveQuery } from '$lib/core/types.js';
 	import { Button } from '$ui/components/ui/button/index.js';
 	import { Badge } from '$ui/components/ui/badge/index.js';
+	import { Input } from '$ui/components/ui/input/index.js';
+	import { Textarea } from '$ui/components/ui/textarea/index.js';
 	import {
 		Card,
 		CardContent,
@@ -13,6 +15,8 @@
 	import { Separator } from '$ui/components/ui/separator/index.js';
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$ui/components/ui/tabs/index.js';
 	import CodeBlockShiki from 'shiki-block-svelte';
+	import { cn } from '$ui/utils.js';
+	import { slide, scale, fade } from 'svelte/transition';
 	import {
 		Zap,
 		ShieldCheck,
@@ -28,7 +32,12 @@
 		Check,
 		Database,
 		RefreshCw,
-		Eye
+		Eye,
+		Search,
+		PenTool,
+		Pin,
+		PinOff,
+		LayoutGrid
 	} from '@lucide/svelte';
 
 	let { data } = $props();
@@ -38,6 +47,7 @@
 		title: string;
 		content: string;
 		color: string;
+		pinned?: boolean;
 		createdAt: number;
 	}
 
@@ -56,27 +66,66 @@
 	const notes = db.notes.liveAll() as unknown as ILiveQuery<Note[]>;
 	const totalCount = db.notes.liveCount();
 
+	// App State
+	let searchQuery = $state('');
+	let isFocused = $state(false);
+
+	// Form State
 	let newTitle = $state('');
 	let newContent = $state('');
 	let selectedColor = $state('#38BDF8');
+	let isNewPinned = $state(false);
 
-	const colors = ['#38BDF8', '#F97316', '#22C55E', '#A855F7', '#EC4899'];
+	const colors = [
+		{ value: '#38BDF8', label: 'Idea' },
+		{ value: '#F97316', label: 'Work' },
+		{ value: '#22C55E', label: 'Personal' },
+		{ value: '#A855F7', label: 'Journal' },
+		{ value: '#EC4899', label: 'Important' }
+	];
 
-	async function addNote(e: Event) {
-		e.preventDefault();
+	// Derived State
+	const filteredNotes = $derived(
+		(notes.current || [])
+			.filter((note) => {
+				if (!searchQuery) return true;
+				const q = searchQuery.toLowerCase();
+				return note.title?.toLowerCase().includes(q) || note.content?.toLowerCase().includes(q);
+			})
+			.sort((a, b) => {
+				// Sort by pinned (true first), then by date (newest first)
+				if (a.pinned === b.pinned) {
+					return b.createdAt - a.createdAt;
+				}
+				return a.pinned ? -1 : 1;
+			})
+	);
+
+	async function addNote(e?: Event) {
+		if (e) e.preventDefault();
 		const title = newTitle.trim();
 		const content = newContent.trim();
 		if (!title && !content) return;
 
 		await db.notes.add({
-			title: title || 'Untitled',
+			title: title || '',
 			content,
 			color: selectedColor,
+			pinned: isNewPinned,
 			createdAt: Date.now()
 		});
 
 		newTitle = '';
 		newContent = '';
+		isNewPinned = false;
+		isFocused = false;
+	}
+
+	async function togglePin(note: Note) {
+		if (note.id === undefined) return;
+		// Create a copy to update
+		const updated = { ...note, pinned: !note.pinned };
+		await db.notes.put(updated);
 	}
 
 	async function deleteNote(id: number) {
@@ -234,6 +283,15 @@ const db = createReactiveDB({
 		<Badge variant="secondary" class="border-sky-500/20 bg-sky-500/10 text-sky-400">
 			v{data.npmVersion} — Now Available
 		</Badge>
+
+		<div class="relative mt-2">
+			<div class="absolute -inset-4 z-0 rounded-full bg-sky-500/20 blur-2xl"></div>
+			<img
+				src="/favicon-database.svg"
+				alt="svelte-idb logo"
+				class="relative z-10 h-24 w-24 drop-shadow-2xl md:h-28 md:w-28"
+			/>
+		</div>
 
 		<h1
 			class="max-w-3xl bg-linear-to-br from-slate-100 via-sky-400 to-purple-500 bg-clip-text text-6xl font-bold tracking-tight text-transparent md:text-7xl"
@@ -400,118 +458,324 @@ const db = createReactiveDB({
 	</section>
 
 	<!-- ═══ INTERACTIVE DEMO ═══ -->
-	<section class="mb-24">
-		<div class="mb-8 flex items-center justify-between">
-			<div>
-				<h2 class="text-2xl font-bold text-slate-100">Interactive Demo</h2>
-				<p class="mt-1 text-sm text-slate-500">
-					Try it live — data persists in your browser's IndexedDB
-				</p>
-			</div>
-			<div class="flex items-center gap-3">
-				<Badge variant="outline" class="border-slate-700 text-slate-400">
-					<strong class="mr-1 text-sky-400">{totalCount.current}</strong> notes
-				</Badge>
-				{#if totalCount.current > 0}
-					<Button
-						variant="ghost"
-						size="sm"
-						class="gap-1.5 text-red-400 hover:bg-red-500/10 hover:text-red-300"
-						onclick={clearAll}
-					>
-						<CircleX size={14} />
-						Clear All
-					</Button>
-				{/if}
-			</div>
+	<section class="relative mb-24 scroll-mt-20" id="demo">
+		<!-- Background glow -->
+		<div
+			class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/5 blur-[120px]"
+		></div>
+
+		<div class="mb-12 flex flex-col items-center gap-4 text-center">
+			<Badge
+				variant="outline"
+				class="border-sky-500/20 bg-sky-500/5 px-4 py-1.5 text-sky-400 backdrop-blur-md"
+			>
+				Live Demonstration
+			</Badge>
+			<h2 class="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
+				Interactive Playground
+			</h2>
+			<p class="max-w-lg text-slate-500">
+				Data persists securely in your local browser's IndexedDB. Experience zero-latency reactivity
+				with a fully functional note-taking app.
+			</p>
 		</div>
 
-		<div class="grid grid-cols-1 items-start gap-6 md:grid-cols-[320px_1fr]">
-			<form
-				class="sticky top-8 flex flex-col gap-4 rounded-xl border border-slate-700/50 bg-slate-800/50 p-5"
-				onsubmit={addNote}
+		<!-- ─── Interactive Demo — Redesigned ─── -->
+		<div
+			class="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/60 shadow-2xl ring-1 ring-slate-800 backdrop-blur-3xl"
+		>
+			<!-- ─── Dashboard Header ─── -->
+			<div
+				class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-800 bg-slate-950/80 px-6 py-3 backdrop-blur-md"
 			>
-				<h3 class="text-base font-semibold text-slate-200">New Note</h3>
-				<input
-					type="text"
-					bind:value={newTitle}
-					placeholder="Title"
-					class="rounded-lg border border-slate-700/50 bg-slate-900/80 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 focus:outline-none"
-				/>
-				<textarea
-					bind:value={newContent}
-					placeholder="Take a note..."
-					rows="3"
-					class="rounded-lg border border-slate-700/50 bg-slate-900/80 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 focus:outline-none"
-				></textarea>
-				<div class="flex gap-2">
-					{#each colors as color (color)}
-						<button
-							type="button"
-							class="h-7 w-7 cursor-pointer rounded-full border-2 border-transparent transition-transform hover:scale-110"
-							class:!border-slate-50={selectedColor === color}
-							class:scale-110={selectedColor === color}
-							style="background-color: {color}"
-							onclick={() => (selectedColor = color)}
-							aria-label="Select color {color}"
-						></button>
-					{/each}
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-400 ring-1 ring-sky-500/20"
+					>
+						<Sparkles size={16} />
+					</div>
+					<div>
+						<h3 class="text-sm font-semibold text-slate-200">My Notes</h3>
+					</div>
 				</div>
-				<Button
-					type="submit"
-					class="w-full bg-sky-500 font-semibold text-slate-950 hover:bg-sky-400"
-				>
-					Add Note
-				</Button>
-			</form>
 
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				<div class="flex items-center gap-3">
+					<div class="relative w-48 md:w-64">
+						<Search class="absolute top-1/2 left-2.5 -translate-y-1/2 text-slate-500" size={14} />
+						<Input
+							type="text"
+							placeholder="Search..."
+							bind:value={searchQuery}
+							class="h-8 rounded-md border-slate-800 bg-slate-900 pl-8 text-xs text-slate-300 placeholder:text-slate-600 focus:border-sky-500/40 focus:ring-sky-500/20"
+						/>
+					</div>
+					<Badge
+						variant="outline"
+						class="h-8 border-slate-800 bg-slate-900 font-mono text-xs text-slate-400"
+					>
+						{filteredNotes.length}
+					</Badge>
+				</div>
+			</div>
+
+			<div class="min-h-[500px] bg-slate-950/30 p-6">
+				<!-- ─── Quick Add Bar ─── -->
+				<div class="mx-auto mb-8 max-w-xl">
+					<div
+						class={cn(
+							'group relative overflow-hidden rounded-xl border bg-slate-900 shadow-lg transition-all duration-300',
+							isFocused
+								? 'border-sky-500/40 ring-4 ring-sky-500/10'
+								: 'border-slate-800 hover:border-slate-700'
+						)}
+					>
+						<form onsubmit={addNote} class="relative z-10">
+							{#if !isFocused && !newContent && !newTitle}
+								<div
+									class="absolute inset-0 flex cursor-text items-center px-4 text-sm font-medium text-slate-500"
+									onclick={() => (isFocused = true)}
+									aria-hidden="true"
+								>
+									Take a note...
+								</div>
+							{/if}
+
+							{#if isFocused || newTitle || newContent}
+								<input
+									type="text"
+									bind:value={newTitle}
+									placeholder="Title"
+									class="w-full bg-transparent px-4 py-3 text-base font-medium text-slate-200 placeholder:text-slate-600 focus:outline-none"
+									onfocus={() => (isFocused = true)}
+								/>
+							{/if}
+
+							<textarea
+								bind:value={newContent}
+								placeholder={isFocused ? 'Take a note...' : ''}
+								rows={isFocused ? 3 : 1}
+								class={cn(
+									'w-full resize-none bg-transparent px-4 text-sm leading-relaxed text-slate-300 placeholder:text-slate-500 focus:outline-none',
+									isFocused ? 'pb-3' : 'min-h-[46px] py-3'
+								)}
+								onfocus={() => (isFocused = true)}
+								onblur={() => {
+									if (!newTitle && !newContent) isFocused = false;
+								}}
+							></textarea>
+
+							{#if isFocused || newTitle || newContent}
+								<div
+									in:slide={{ duration: 150 }}
+									class="flex items-center justify-between border-t border-slate-800 bg-slate-900/50 px-3 py-2"
+								>
+									<div class="flex items-center gap-4">
+										<div class="flex gap-1">
+											{#each colors as color (color.value)}
+												<button
+													type="button"
+													class={cn(
+														'group flex h-6 w-6 items-center justify-center rounded-full transition-all hover:scale-110',
+														selectedColor === color.value &&
+															'ring-2 ring-slate-400 ring-offset-2 ring-offset-slate-900'
+													)}
+													onclick={() => (selectedColor = color.value)}
+													title={color.label}
+												>
+													<div
+														class="h-4 w-4 rounded-full border border-white/10 shadow-sm"
+														style="background-color: {color.value}"
+													></div>
+												</button>
+											{/each}
+										</div>
+										<button
+											type="button"
+											class={cn(
+												'flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors',
+												isNewPinned
+													? 'bg-sky-500/10 text-sky-400'
+													: 'text-slate-500 hover:bg-slate-800 hover:text-slate-300'
+											)}
+											onclick={() => (isNewPinned = !isNewPinned)}
+										>
+											<Pin size={12} class={isNewPinned ? 'fill-current' : ''} />
+											{isNewPinned ? 'Pinned' : 'Pin'}
+										</button>
+									</div>
+
+									<div class="flex items-center gap-2">
+										<Button
+											type="button"
+											variant="ghost"
+											size="sm"
+											class="h-7 px-3 text-xs text-slate-400 hover:text-slate-200"
+											onclick={() => {
+												isFocused = false;
+												newTitle = '';
+												newContent = '';
+											}}
+										>
+											Close
+										</Button>
+										<Button
+											type="submit"
+											size="sm"
+											class="h-7 gap-1.5 rounded-md bg-sky-600 px-4 text-xs font-medium text-white hover:bg-sky-500 disabled:opacity-50"
+											disabled={!newContent.trim() && !newTitle.trim()}
+										>
+											Add Note
+										</Button>
+									</div>
+								</div>
+							{/if}
+						</form>
+					</div>
+				</div>
+
+				<!-- ─── Notes Grid ─── -->
 				{#if notes.loading}
-					<div
-						class="col-span-full rounded-xl border border-dashed border-slate-700/50 bg-slate-800/30 p-10 text-center text-slate-500"
-					>
-						Loading notes...
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{#each Array(6) as _}
+							<div
+								class="h-40 animate-pulse rounded-xl border border-slate-800 bg-slate-800/20"
+							></div>
+						{/each}
 					</div>
-				{:else if notes.error}
-					<div
-						class="col-span-full rounded-xl border border-dashed border-red-900/50 bg-red-950/20 p-10 text-center text-red-400"
-					>
-						Error: {notes.error.message}
-					</div>
-				{:else if notes.current.length === 0}
-					<div
-						class="col-span-full rounded-xl border border-dashed border-slate-700/50 bg-slate-800/30 p-10 text-center text-slate-500"
-					>
-						No notes yet. Create one to see live queries in action!
+				{:else if filteredNotes.length === 0}
+					<div class="flex flex-col items-center justify-center py-20 text-center opacity-60">
+						<div class="mb-4 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+							{#if searchQuery}
+								<Search size={24} class="text-slate-600" />
+							{:else}
+								<LayoutGrid size={24} class="text-slate-600" />
+							{/if}
+						</div>
+						<p class="text-base font-medium text-slate-400">
+							{searchQuery
+								? `No notes matching "${searchQuery}"`
+								: 'Your personal knowledge base is empty'}
+						</p>
+						<p class="mt-1 text-xs text-slate-600">
+							{searchQuery ? 'Try a different keyword' : 'Start by adding a quick note above'}
+						</p>
 					</div>
 				{:else}
-					{#each notes.current as note (note.id)}
-						<div
-							class="flex flex-col gap-2 rounded-xl border border-t-4 border-slate-700/50 bg-slate-800/50 p-4 transition-all hover:-translate-y-0.5 hover:bg-slate-800/80 hover:shadow-lg"
-							style="border-top-color: {note.color}"
-						>
-							<div class="flex items-start justify-between">
-								<h4 class="text-sm font-semibold wrap-break-word text-slate-200">{note.title}</h4>
-								<button
-									class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-slate-600 transition-all hover:bg-slate-700 hover:text-red-400"
-									onclick={() => deleteNote(note.id!)}
-									aria-label="Delete note"
-								>
-									<Trash2 size={14} />
-								</button>
-							</div>
-							{#if note.content}
-								<p class="grow text-xs wrap-break-word whitespace-pre-wrap text-slate-400">
-									{note.content}
-								</p>
-							{/if}
-							<span class="text-[10px] text-slate-600"
-								>{new Date(note.createdAt).toLocaleDateString()}</span
+					<div class="columns-1 gap-4 space-y-4 sm:columns-2 lg:columns-3">
+						{#each filteredNotes as note (note.id)}
+							<div
+								in:scale={{ duration: 200, start: 0.98 }}
+								class={cn(
+									'group break-inside-avoid overflow-hidden rounded-xl border bg-slate-900/80 shadow-sm backdrop-blur-sm transition-all duration-200 hover:translate-y-[-2px] hover:shadow-md',
+									note.pinned
+										? 'border-sky-500/20 shadow-sky-500/5'
+										: 'border-slate-800 hover:border-slate-700'
+								)}
 							>
-						</div>
-					{/each}
+								<!-- Label Stripe -->
+								<div
+									class="h-1 w-full"
+									style="background-color: {note.color}; opacity: {note.pinned ? 0.8 : 0.5}"
+								></div>
+
+								<div class="p-4">
+									<div class="mb-3 flex items-start justify-between gap-3">
+										<h4 class="line-clamp-1 text-sm font-semibold text-slate-200">
+											{#if note.title}
+												<!-- Search Highlighting -->
+												{#if searchQuery}
+													{@const parts = note.title.split(new RegExp(`(${searchQuery})`, 'gi'))}
+													{#each parts as part}
+														{#if part.toLowerCase() === searchQuery.toLowerCase()}
+															<span class="rounded-[2px] bg-yellow-500/20 text-yellow-200"
+																>{part}</span
+															>
+														{:else}
+															{part}
+														{/if}
+													{/each}
+												{:else}
+													{note.title}
+												{/if}
+											{:else}
+												<span class="text-slate-600 italic">Untitled</span>
+											{/if}
+										</h4>
+
+										<!-- Actions (Visible on Hover) -->
+										<div
+											class="-mt-1 -mr-2 flex items-center opacity-0 transition-opacity group-hover:opacity-100"
+										>
+											<button
+												class={cn(
+													'rounded-md p-1.5 transition-colors',
+													note.pinned
+														? 'text-sky-400 hover:bg-sky-500/10'
+														: 'text-slate-500 hover:bg-slate-800 hover:text-slate-300'
+												)}
+												onclick={() => togglePin(note)}
+												title={note.pinned ? 'Unpin' : 'Pin'}
+											>
+												<Pin size={13} class={note.pinned ? 'fill-current' : ''} />
+											</button>
+											<button
+												class="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-red-500/10 hover:text-red-400"
+												onclick={() => deleteNote(note.id!)}
+												title="Delete"
+											>
+												<Trash2 size={13} />
+											</button>
+										</div>
+									</div>
+
+									<p class="text-xs leading-relaxed whitespace-pre-wrap text-slate-400">
+										{#if searchQuery && note.content}
+											{@const parts = note.content.split(new RegExp(`(${searchQuery})`, 'gi'))}
+											{#each parts as part}
+												{#if part.toLowerCase() === searchQuery.toLowerCase()}
+													<span class="rounded-[2px] bg-yellow-500/20 text-yellow-200">{part}</span>
+												{:else}
+													{part}
+												{/if}
+											{/each}
+										{:else}
+											{note.content}
+										{/if}
+									</p>
+
+									<div class="mt-4 flex items-center justify-between">
+										<Badge
+											variant="secondary"
+											class="h-5 border-none bg-slate-800 px-1.5 text-[10px] text-slate-500"
+										>
+											{colors.find((c) => c.value === note.color)?.label}
+										</Badge>
+										<span class="font-mono text-[10px] text-slate-600">
+											{new Date(note.createdAt).toLocaleDateString(undefined, {
+												month: 'short',
+												day: 'numeric'
+											})}
+										</span>
+									</div>
+								</div>
+							</div>
+						{/each}
+					</div>
 				{/if}
 			</div>
+
+			<!-- Footer Stats -->
+			{#if (notes.current || []).length > 0}
+				<div class="flex justify-end border-t border-slate-800 bg-slate-950/60 px-4 py-2">
+					<button
+						class="flex items-center gap-1.5 text-[10px] font-medium text-slate-600 opacity-60 transition-colors hover:text-red-400 hover:opacity-100"
+						onclick={clearAll}
+					>
+						<Trash2 size={10} />
+						Clear All
+					</button>
+				</div>
+			{/if}
 		</div>
 	</section>
 

@@ -3,7 +3,9 @@
 	import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '$ui/components/ui/sheet/index.js';
 	import DocSidebar from '$components/doc-sidebar.svelte';
 	import { Menu, ArrowLeft } from '@lucide/svelte';
+	import { MediaQuery } from 'svelte/reactivity';
 
+	const large = new MediaQuery('min-width: 1024px');
 	const { children } = $props();
 </script>
 
@@ -11,6 +13,12 @@
 	<!-- Desktop sidebar -->
 	<aside class="hidden w-72 shrink-0 border-r border-slate-700/50 bg-slate-900/40 lg:block">
 		<div class="sticky top-0 h-screen overflow-y-auto px-4 py-6">
+			<div class="mb-6 px-4">
+				<a href="/" class="flex items-center gap-3 transition-opacity hover:opacity-80">
+					<img src="/favicon-database.svg" alt="svelte-idb" class="h-8 w-8" />
+					<span class="font-bold text-slate-200">svelte-idb docs</span>
+				</a>
+			</div>
 			<DocSidebar />
 		</div>
 	</aside>
@@ -33,6 +41,12 @@
 			<SheetContent side="left" class="w-72 border-slate-700/50 bg-slate-900 p-0">
 				<SheetTitle class="sr-only">Documentation Navigation</SheetTitle>
 				<div class="px-4 py-6">
+					<div class="mb-6 px-4">
+						<a href="/" class="flex items-center gap-3 transition-opacity hover:opacity-80">
+							<img src="/favicon-database.svg" alt="svelte-idb" class="h-8 w-8" />
+							<span class="font-bold text-slate-200">svelte-idb docs</span>
+						</a>
+					</div>
 					<DocSidebar />
 				</div>
 			</SheetContent>
@@ -42,7 +56,7 @@
 	<!-- Main content -->
 	<main class="min-w-0 flex-1">
 		<div class="mx-auto max-w-4xl px-6 py-8 lg:px-12 lg:py-12">
-			<div class="mb-6">
+			<div class="mb-6 flex {large.current ? 'justify-start' : 'justify-end'}">
 				<a
 					href="/"
 					class="inline-flex items-center gap-1.5 text-sm text-slate-500 transition-colors hover:text-sky-400"
