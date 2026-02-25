@@ -1,5 +1,6 @@
 <div align="center">
-  <h1>🗄️ svelte-idb</h1>
+  <img src="./static/favicon-database.svg" width="128" height="128" alt="svelte-idb logo" />
+  <h1>svelte-idb</h1>
   <p><strong>Zero-dependency, SSR-safe, Svelte 5 runes-native IndexedDB wrapper</strong></p>
 
   <p>
@@ -52,6 +53,7 @@ pnpm add svelte-idb
 ## 🚀 Quick Start
 
 ### 1. Define your Database
+
 Use `createReactiveDB` to define your schema, stores, and configuration. Do this in a shared file like `src/lib/db.ts`.
 
 ```typescript
@@ -78,43 +80,44 @@ export const db = createReactiveDB({
 ```
 
 ### 2. Use Live Queries in your Components
+
 Use the `.liveAll()`, `.liveGet()`, or `.liveCount()` methods. The `.current` property holds the reactive state and will automatically update whenever the underlying store changes.
 
 ```html
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-  import { db } from '$lib/db';
-  
-  // 1. Create a live query
-  // This automatically fetches data and reacts to any changes
-  const todos = db.todos.liveAll();
-  
-  let text = $state('');
+	import { db } from '$lib/db';
 
-  async function addTodo() {
-    // 2. Mutate the database
-    // The `todos` query will automatically re-run and update the UI!
-    await db.todos.add({ text, done: false, createdAt: Date.now() });
-    text = '';
-  }
+	// 1. Create a live query
+	// This automatically fetches data and reacts to any changes
+	const todos = db.todos.liveAll();
+
+	let text = $state('');
+
+	async function addTodo() {
+		// 2. Mutate the database
+		// The `todos` query will automatically re-run and update the UI!
+		await db.todos.add({ text, done: false, createdAt: Date.now() });
+		text = '';
+	}
 </script>
 
 <div>
-  <input bind:value={text} placeholder="New todo..." />
-  <button onclick={addTodo}>Add</button>
+	<input bind:value="{text}" placeholder="New todo..." />
+	<button onclick="{addTodo}">Add</button>
 </div>
 
 <!-- 3. Consume the reactive state -->
 {#if todos.loading}
-  <p>Loading...</p>
+<p>Loading...</p>
 {:else if todos.error}
-  <p>Error: {todos.error.message}</p>
+<p>Error: {todos.error.message}</p>
 {:else}
-  <ul>
-    {#each todos.current as todo (todo.id)}
-      <li>{todo.text}</li>
-    {/each}
-  </ul>
+<ul>
+	{#each todos.current as todo (todo.id)}
+	<li>{todo.text}</li>
+	{/each}
+</ul>
 {/if}
 ```
 
@@ -123,9 +126,11 @@ Use the `.liveAll()`, `.liveGet()`, or `.liveCount()` methods. The `.current` pr
 ## 📚 API Reference
 
 ### `createReactiveDB(config)`
+
 Creates and provisions an IndexedDB instance. Returns an object where each store is available as a property.
 
 **Configuration Options:**
+
 - `name` (string): The database name. Must be unique per origin.
 - `version` (number): The schema version. Increment this whenever you change the `stores` object.
 - `stores` (object): Map of store names to their definitions (`keyPath`, `autoIncrement`).
@@ -159,6 +164,7 @@ All standard mutations automatically notify active LiveQueries to trigger Svelte
 ## 🛠️ Advanced
 
 ### Secondary Indexes
+
 You can define secondary indexes in your schema to enable querying by properties other than the primary key.
 
 ```typescript
@@ -180,10 +186,12 @@ const db = createReactiveDB({
 const adults = await db.users.getAllFromIndex('byAge', IDBKeyRange.lowerBound(18));
 ```
 
-*(Note: Reactive `liveQueryByIndex` is coming in Phase 3!)*
+_(Note: Reactive `liveQueryByIndex` is coming in Phase 3!)_
 
 ### SSR Safety
-Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) will safely "no-op" by default instead of crashing with `window is not defined`. 
+
+Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) will safely "no-op" by default instead of crashing with `window is not defined`.
+
 - `liveAll().current` will cleanly return an empty array `[]` on the server.
 - `loading` will be `false` during SSR so skeleton loaders aren't triggered server-side.
 - Once the component mounts in the browser, the real IndexedDB connection is established and data hydrates automatically.
@@ -199,4 +207,5 @@ Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) wi
 - [ ] **Migration Sugar:** Simplified API for adding columns or renaming stores.
 
 ## 📄 License
+
 MIT © [Michael Obele](https://github.com/Michael-Obele)
