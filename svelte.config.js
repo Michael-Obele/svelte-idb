@@ -15,6 +15,13 @@ const config = {
 			"$components": "./src/routes/docs/_components",
 			"$components/*": "./src/routes/docs/_components/*"
 		}
+	},
+	vitePlugin: {
+		inspector: {
+			toggleKeyCombo: 'alt-x',
+			showToggleButton: 'always',
+			toggleButtonPos: 'bottom-right'
+		}
 	}
 };
 
