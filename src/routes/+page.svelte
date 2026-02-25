@@ -461,7 +461,7 @@ const db = createReactiveDB({
 	<section class="relative mb-24 scroll-mt-20" id="demo">
 		<!-- Background glow -->
 		<div
-			class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/5 blur-[120px]"
+			class="pointer-events-none absolute top-1/2 left-1/2 -z-10 size-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/5 blur-[120px]"
 		></div>
 
 		<div class="mb-12 flex flex-col items-center gap-4 text-center">
@@ -518,7 +518,7 @@ const db = createReactiveDB({
 				</div>
 			</div>
 
-			<div class="min-h-[500px] bg-slate-950/30 p-6">
+			<div class="min-h-125 bg-slate-950/30 p-6">
 				<!-- ─── Quick Add Bar ─── -->
 				<div class="mx-auto mb-8 max-w-xl">
 					<div
@@ -556,7 +556,7 @@ const db = createReactiveDB({
 								rows={isFocused ? 3 : 1}
 								class={cn(
 									'w-full resize-none bg-transparent px-4 text-sm leading-relaxed text-slate-300 placeholder:text-slate-500 focus:outline-none',
-									isFocused ? 'pb-3' : 'min-h-[46px] py-3'
+									isFocused ? 'pb-3' : 'min-h-11.5 py-3'
 								)}
 								onfocus={() => (isFocused = true)}
 								onblur={() => {
@@ -666,7 +666,7 @@ const db = createReactiveDB({
 							<div
 								in:scale={{ duration: 200, start: 0.98 }}
 								class={cn(
-									'group break-inside-avoid overflow-hidden rounded-xl border bg-slate-900/80 shadow-sm backdrop-blur-sm transition-all duration-200 hover:translate-y-[-2px] hover:shadow-md',
+									'group break-inside-avoid overflow-hidden rounded-xl border bg-slate-900/80 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md',
 									note.pinned
 										? 'border-sky-500/20 shadow-sky-500/5'
 										: 'border-slate-800 hover:border-slate-700'
