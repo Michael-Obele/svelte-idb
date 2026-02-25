@@ -7,9 +7,9 @@
     <a href="https://www.npmjs.com/package/svelte-idb">
       <img src="https://img.shields.io/npm/v/svelte-idb?style=flat-square&color=ff3e00&label=npm" alt="npm version" />
     </a>
-    <a href="https://bundlephobia.com/package/svelte-idb">
+    <!-- <a href="https://bundlephobia.com/package/svelte-idb">
       <img src="https://img.shields.io/bundlephobia/minzip/svelte-idb?style=flat-square&color=33b5e5&label=minzipped" alt="bundle size" />
-    </a>
+    </a> -->
     <a href="https://www.npmjs.com/package/svelte-idb">
       <img src="https://img.shields.io/npm/dm/svelte-idb?style=flat-square&color=cb3837&label=downloads" alt="downloads" />
     </a>
@@ -51,6 +51,8 @@ pnpm add svelte-idb
 ```
 
 ## 🚀 Quick Start
+
+For detailed step-by-step guides and examples, visit the [documentation site](https://idb.svelte-apps.me/docs/quick-start).
 
 ### 1. Define your Database
 
@@ -124,6 +126,8 @@ Use the `.liveAll()`, `.liveGet()`, or `.liveCount()` methods. The `.current` pr
 ---
 
 ## 📚 API Reference
+
+For a complete interactive API reference, visit [idb.svelte-apps.me/docs](https://idb.svelte-apps.me/docs).
 
 ### `createReactiveDB(config)`
 

@@ -8,7 +8,8 @@
 		"type": "git",
 		"url": "git+https://github.com/Michael-Obele/svelte-idb.git"
 	},
-	"homepage": "https://github.com/Michael-Obele/svelte-idb#readme",
+	"homepage": "https://idb.svelte-apps.me/",
+	"documentation": "https://idb.svelte-apps.me/docs/installation",
 	"bugs": {
 		"url": "https://github.com/Michael-Obele/svelte-idb/issues"
 	},
