@@ -74,6 +74,8 @@
 		"tailwindcss": "^4.1.18",
 		"tw-animate-css": "^1.4.0",
 		"typescript": "^5.9.3",
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^3.5.0",
 		"vite": "^7.3.1"
 	},
 	"keywords": [
@@ -87,9 +89,5 @@
 		"runes",
 		"ssr-safe",
 		"zero-dependency"
-	],
-	"dependencies": {
-		"clsx": "^2.1.1",
-		"tailwind-merge": "^3.5.0"
-	}
+	]
 }
