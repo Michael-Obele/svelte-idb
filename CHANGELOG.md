@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.4](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.3...svelte-idb-v0.1.4) (2026-02-26)
+
+
+### Features
+
+* add Input and Textarea components for enhanced note-taking functionality ([e7f178a](https://github.com/Michael-Obele/svelte-idb/commit/e7f178acb10168181772332f1e9e334191802320))
+* add Input and Textarea components with Svelte integration ([cb2a157](https://github.com/Michael-Obele/svelte-idb/commit/cb2a157201593c4ea2e946dc9f22f01e6c170036))
+* configure SvelteKit inspector with alt-x toggle and bottom-right button ([3f41549](https://github.com/Michael-Obele/svelte-idb/commit/3f41549d0d665dbf1103b90d66cb67e953557baf))
+* implement note editing functionality with modal support in +page.svelte ([748c7a3](https://github.com/Michael-Obele/svelte-idb/commit/748c7a38de1b56485de0cd5aa3b6b65c1ae365b3))
+* update favicon to a Svelte logo with a database badge and introduce a dedicated database favicon. ([65e4b1c](https://github.com/Michael-Obele/svelte-idb/commit/65e4b1cd66cfc79ad0057cc8b53096750c50b804))
+
+
+### Bug Fixes
+
+* improve formatting and structure in README.md for better readability ([e052dde](https://github.com/Michael-Obele/svelte-idb/commit/e052dde71efe387714275d750f405a58bf867e49))
+* remove duplicate dependencies from package.json and bun.lock ([e9feed4](https://github.com/Michael-Obele/svelte-idb/commit/e9feed42ae44c86aa96252d3e1fbf6a39c3414b5))
+* update CSS classes for improved layout and responsiveness in +page.svelte ([37afb58](https://github.com/Michael-Obele/svelte-idb/commit/37afb58ccd764282cfbcfcf4da6c1769706ceb00))
+* update homepage and add documentation link in package.json; enhance README.md with additional resources ([04501ac](https://github.com/Michael-Obele/svelte-idb/commit/04501ac6995e5a5cbb009bfe66d9f4064715d9db))
+
 ## [0.1.3](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.2...svelte-idb-v0.1.3) (2026-02-24)
 
 
