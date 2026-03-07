@@ -850,9 +850,21 @@ const db = createReactiveDB({
 
 	<!-- ═══ FOOTER ═══ -->
 	<footer
-		class="flex items-center justify-center gap-1 border-t border-slate-800 py-8 text-sm text-slate-600"
+		class="flex flex-col items-center justify-center gap-4 border-t border-slate-800 py-12 text-sm text-slate-600"
 	>
-		Built with <Heart size={14} class="fill-red-500 text-red-500" /> for the Svelte community.
+		<div class="flex items-center gap-1">
+			Built with <Heart size={14} class="fill-red-500 text-red-500" /> for the Svelte community.
+		</div>
+		<nav class="flex items-center gap-6">
+			<a href="/docs/installation" class="transition-colors hover:text-slate-400">Documentation</a>
+			<a
+				href="https://github.com/Michael-Obele/svelte-idb"
+				class="transition-colors hover:text-slate-400"
+				target="_blank"
+				rel="noopener noreferrer">GitHub</a
+			>
+			<a href="/sitemap.xml" class="transition-colors hover:text-slate-400">Sitemap</a>
+		</nav>
 	</footer>
 	<!-- Edit Modal -->
 	{#if editingNote}
@@ -893,7 +905,7 @@ const db = createReactiveDB({
 							id="edit-content"
 							bind:value={editContent}
 							placeholder="Write your note..."
-							class="min-h-[150px] resize-none border-slate-800 bg-slate-900 focus:ring-sky-500/20"
+							class="min-h-37.5 resize-none border-slate-800 bg-slate-900 focus:ring-sky-500/20"
 						/>
 					</div>
 				</div>

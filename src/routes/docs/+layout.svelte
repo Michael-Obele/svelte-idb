@@ -66,6 +66,28 @@
 				</a>
 			</div>
 			{@render children()}
+
+			<footer
+				class="mt-20 flex flex-col items-center justify-between gap-4 border-t border-slate-800/50 py-10 text-xs text-slate-500 sm:flex-row"
+			>
+				<div class="flex items-center gap-1.5">
+					Built for Svelte 5 by <a
+						href="https://github.com/Michael-Obele"
+						class="text-slate-400 underline underline-offset-4 decoration-slate-700 hover:text-sky-400 hover:decoration-sky-400"
+						>Michael Obele</a
+					>
+				</div>
+				<nav class="flex items-center gap-6">
+					<a href="/" class="transition-colors hover:text-slate-300">Home</a>
+					<a
+						href="https://github.com/Michael-Obele/svelte-idb"
+						class="transition-colors hover:text-slate-300"
+						target="_blank"
+						rel="noopener noreferrer">GitHub</a
+					>
+					<a href="/sitemap.xml" class="transition-colors hover:text-slate-300">Sitemap</a>
+				</nav>
+			</footer>
 		</div>
 	</main>
 </div>
