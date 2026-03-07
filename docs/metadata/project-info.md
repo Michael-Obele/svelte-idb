@@ -4,15 +4,12 @@
 - **Package name**: svelte-idb
 - **npm url**: https://www.npmjs.com/package/svelte-idb
 - **GitHub url**: https://github.com/Michael-Obele/svelte-idb
-- **Version**: 0.1.2
+- **Website**: https://idb.svelte-apps.me/
+- **Documentation**: https://idb.svelte-apps.me/docs/installation
 - **Keywords**: svelte, sveltekit, indexeddb, reactive, database, offline-first, svelte-5, runes, ssr-safe, zero-dependency.
 - **License**: MIT
-- **Size**: ~2KB minzipped (47kB unpacked)
 
 ## npm Registry Details
-- **Latest Version**: 0.1.2
-- **Unpacked Size**: 47.7kB
-- **File Count**: 29
 - **Maintainers**: admin@svelte-apps.me
 - **Published**: Feb 2026
 
@@ -28,28 +25,15 @@
 ## Versioning Strategy
 
 **Dynamic Version Resolution:**
-- Version is read from `package.json` at build time
-- Stored in `src/lib/version.ts`
-- Exported from `src/lib/index.ts` as `APP_VERSION`
-- Exported from `src/lib/svelte/index.ts` for Svelte components
-- Used in `src/routes/+page.svelte` for the landing page version badge
-
-**Usage in Components:**
-```typescript
-import { APP_VERSION } from 'svelte-idb';
-
-// In Svelte 5 component:
-<div>v{APP_VERSION}</div>
-```
+- Version is retrieved dynamically from npm, ensuring the most up-to-date representation on the website.
+- The library itself does not bundle or export its own version number (i.e. no `APP_VERSION` from `src/lib/index.ts`).
 
 **Build Process:**
 1. Update `package.json` with new version
-2. Run `npm run build` to rebuild the app
-3. Version is automatically synced across all UI components and exports
-4. Publish with `npm publish`
+2. Run `npm run build` to rebuild the library package
+3. Publish with `npm publish`
 
 **Advantages:**
-- Single source of truth (package.json)
-- No manual version updates needed in code
-- Type-safe version constants
-- Consistent versioning across app and npm registry
+- Single source of truth (npm registry and `package.json`).
+- Prevents redundant exports within the main library codebase.
+- No manual version string updates required in UI components.
