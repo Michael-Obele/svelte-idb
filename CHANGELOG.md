@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.5](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.4...svelte-idb-v0.1.5) (2026-03-07)
+
+
+### Features
+
+* add API design and implementation roadmap documentation for svelte-idb-sync ([f919173](https://github.com/Michael-Obele/svelte-idb/commit/f91917336696226a99ad945a3d109dfdaecd8bee))
+* add API design documentation for svelte-idb-sync ([082c2af](https://github.com/Michael-Obele/svelte-idb/commit/082c2afb9b8efb58c9a40eaf696d429975e9c907))
+* create implementation roadmap for svelte-idb-sync ([082c2af](https://github.com/Michael-Obele/svelte-idb/commit/082c2afb9b8efb58c9a40eaf696d429975e9c907))
+* enhance footer with navigation links and add sitemap server route ([0d14974](https://github.com/Michael-Obele/svelte-idb/commit/0d149749e1c5d25a44da7e480c886e795966301c))
+
+
+### Bug Fixes
+
+* update project metadata by removing version and size details; enhance versioning strategy explanation ([4d35ae7](https://github.com/Michael-Obele/svelte-idb/commit/4d35ae76545832d5c203c6863f6a06825440c6d2))
+
 ## [0.1.4](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.3...svelte-idb-v0.1.4) (2026-02-26)
 
 
