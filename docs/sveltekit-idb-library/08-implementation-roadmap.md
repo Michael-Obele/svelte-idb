@@ -30,12 +30,12 @@ Phase 0 ──── Phase 1 ──── Phase 2 ──── Phase 3 ───
 
 ```text
 svelte-idb/
-├── src/lib/core/          
-├── src/lib/svelte/        
+├── src/lib/core/
+├── src/lib/svelte/
 ├── package.json           (configured)
 ├── vite.config.ts         (vitest browser mode setup)
 ├── tsconfig.json          (strict)
-└── README.md              
+└── README.md
 ```
 
 ### Definition of Done
@@ -92,18 +92,24 @@ await db.users.delete(id);
 ```html
 <!-- This should work after Phase 2: -->
 <script lang="ts">
-  import { createReactiveDB } from 'svelte-idb/svelte';
+	import { createReactiveDB } from 'svelte-idb/svelte';
 
-  const db = createReactiveDB({ name: 'test', version: 1, stores: { /* ... */ } });
-  const users = db.users.liveAll();
+	const db = createReactiveDB({
+		name: 'test',
+		version: 1,
+		stores: {
+			/* ... */
+		}
+	});
+	const users = db.users.liveAll();
 </script>
 
 {#each users.current as user}
-	<p>{user.name}</p>
+<p>{user.name}</p>
 {/each}
 
-<button onclick={() => db.users.add({ name: 'New User' })}>
-	Add User (list updates automatically)
+<button onclick="{()" ="">
+	db.users.add({ name: 'New User' })}> Add User (list updates automatically)
 </button>
 ```
 
@@ -115,19 +121,89 @@ await db.users.delete(id);
 
 ---
 
-## Phase 3: DX Polish
+## 🎯 Early Wins: Forward-Implemented Phase 3 Features
 
-**Goal:** Query builder, transactions, better errors, debug mode.
+During implementation of Phases 1 & 2, we discovered that several features originally planned for Phase 3 were critical for robustness and DX, and were therefore implemented early:
+
+### ✅ Error Handling System
+
+A complete typed error hierarchy enabling graceful error handling:
+
+- `IDBError` (base class)
+- `IDBNotFoundError` — Store or index doesn't exist
+- `IDBConstraintError` — Unique constraint violation (duplicate key)
+- `IDBVersionError` — Version mismatch during upgrade
+- `IDBAbortError` — Transaction aborted
+- `IDBTimeoutError` — Operation timeout
+
+**Why Early:** Essential for debugging and providing meaningful feedback to users.
+
+### ✅ Debug Mode
+
+Console logging with `[svelte-idb]` prefix for all Store operations.
+
+**Why Early:** Critical for development experience and troubleshooting.
+
+### ✅ Database Lifecycle Hooks
+
+- **`onUpgrade`** — Custom migration logic during version upgrades
+
+  ```typescript
+  const db = createDB({
+  	onUpgrade: (db, oldVer, newVer, tx) => {
+  		// Custom migration logic
+  	}
+  });
+  ```
+
+- **`onBlocked`** — Handle concurrent tab upgrades gracefully
+  ```typescript
+  const db = createDB({
+  	onBlocked: () => console.warn('Another tab is upgrading...')
+  });
+  ```
+
+**Why Early:** Essential for multi-tab support and data migrations in production.
+
+### ✅ Flexible SSR Handling
+
+Configurable SSR strategy beyond simple noop:
+
+```typescript
+ssr?: 'noop' | 'throw' | ((operation: string) => void)
+```
+
+**Why Early:** Critical for different SSR scenarios (e.g., logging, error tracking).
+
+### ✅ Enhanced LiveQuery Interface
+
+Beyond basic reactivity:
+
+- `current` — Reactive query result
+- `loading` — Boolean indicating fetch status
+- `error` — Captures errors during queries
+- `refresh()` — Manual re-fetch trigger
+- `destroy()` — Cleanup lifecycle
+
+**Why Early:** Users needed visibility into query state and error handling.
+
+---
+
+## Phase 3: DX Polish — Remaining Advanced Features
+
+**Goal:** Query builder, transactions, advanced hooks.
 
 > **Tasks Status:** Tracked in [TODO.md](./TODO.md#phase-3-dx-polish--advanced-features-pending)
+
+> **Note:** Error handling, debug mode, and lifecycle hooks were completed early (see ["Early Wins"](#-early-wins-forward-implemented-phase-3-features) section above).
 
 ### Deliverables
 
 - Chainable query builder works (`where().equals().toArray()`)
 - Multi-store transactions with auto-commit/rollback
-- Bulk operations in single transaction (`addMany`, etc.)
-- Debug mode with console logging
-- Middleware hooks for lifecycle events
+- Bulk operations in single transaction (`addMany`, `putMany`, `deleteMany`, etc.)
+- Middleware hooks for lifecycle events (`beforeAdd`, `afterAdd`, `beforePut`, `afterPut`, etc.)
+- Detailed debug logging with timing information
 
 ### Definition of Done
 
@@ -176,7 +252,6 @@ await db.users.delete(id);
 | Svelte 5 runes API changes         | Low        | High   | Pin to Svelte 5.x, follow RC                        |
 | `.svelte.ts` compilation issues    | Medium     | Medium | Test with latest `@sveltejs/package`                |
 | `vitest/browser` incompatibilities | Low        | Medium | Ensure headless Playwright instance runs fine in CI |
-
 
 ---
 
