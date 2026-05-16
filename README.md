@@ -202,6 +202,24 @@ Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) wi
 
 ---
 
+## 🧪 Testing
+
+The project uses Vitest Browser Mode with Playwright for real browser IndexedDB coverage.
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:browser
+```
+
+For continuous validation, the CI workflow runs:
+
+- `npm run check`
+- `npm run package`
+- `npm run test:browser`
+
+---
+
 ## 🔮 Roadmap
 
 - [ ] **Query Builder:** Chainable query API (`where(index).equals(value)`).
