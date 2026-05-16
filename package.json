@@ -95,5 +95,8 @@
 		"runes",
 		"ssr-safe",
 		"zero-dependency"
-	]
+	],
+	"dependencies": {
+		"@types/node": "^25.8.0"
+	}
 }

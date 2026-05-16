@@ -14,9 +14,7 @@ export default mergeConfig(
 			browser: {
 				enabled: true,
 				headless: true,
-				provider: playwright(
-					executablePath ? { launchOptions: { executablePath } } : undefined
-				),
+				provider: playwright(executablePath ? { launchOptions: { executablePath } } : undefined),
 				instances: [{ browser: 'chromium' }]
 			},
 			testTimeout: 10_000

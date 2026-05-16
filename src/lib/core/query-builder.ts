@@ -66,10 +66,14 @@ export class QueryBuilder<T> implements IQueryBuilder<T> {
 				return await this.request<T | undefined>(db, (index) => index.get(this.query!));
 			}
 
-			return await this.request<T | undefined>(db, (index) => index.openCursor(), (result) => {
-				const cursor = result as IDBCursorWithValue | null;
-				return cursor?.value as T | undefined;
-			});
+			return await this.request<T | undefined>(
+				db,
+				(index) => index.openCursor(),
+				(result) => {
+					const cursor = result as IDBCursorWithValue | null;
+					return cursor?.value as T | undefined;
+				}
+			);
 		} catch (error) {
 			throw wrapIDBError(error, `${this.storeName}.where(${this.indexName}).first`);
 		}
