@@ -36,6 +36,7 @@
 - **🎈 Tiny & Zero-Dependency:** Less than 2KB minzipped. No external libraries, just pure modern browser APIs.
 - **🏷️ First-Class TypeScript:** Define your schema once and enjoy type-safe queries, stores, and autocomplete everywhere.
 - **🔄 Automatic Live Queries:** Mutations (`add`, `put`, `delete`, `clear`) automatically trigger microtask-batched reactivity for optimal performance.
+- **🗂️ Indexed Query Builder (MVP):** Query secondary indexes with `where(index).equals(value)` plus range operators like `between`, `above`, and `below`.
 - **🧩 Dual Exports:** Clean Separation between core logic and Svelte-specific reactive hooks.
 
 ---
@@ -162,6 +163,23 @@ All standard mutations automatically notify active LiveQueries to trigger Svelte
 | **`clear()`**     | Removes all records from the store.                    |
 | **`get(key)`**    | Fetches a single record (non-reactive).                |
 | **`getAll()`**    | Fetches all records (non-reactive).                    |
+| **`where(index)`** | Starts an indexed query builder (non-reactive MVP).   |
+
+### Query Builder Methods (`db.storeName.where(indexName).*`)
+
+The current query builder is a core-only MVP for secondary index reads.
+
+| Method                    | Description                                              |
+| :------------------------ | :------------------------------------------------------- |
+| **`equals(value)`**       | Matches records with an exact index value.               |
+| **`between(a, b)`**       | Matches records within an inclusive range by default.    |
+| **`above(value)`**        | Matches records strictly greater than the value.         |
+| **`aboveOrEqual(value)`** | Matches records greater than or equal to the value.      |
+| **`below(value)`**        | Matches records strictly less than the value.            |
+| **`belowOrEqual(value)`** | Matches records less than or equal to the value.         |
+| **`toArray()`**           | Returns all matching records.                            |
+| **`first()`**             | Returns the first matching record in index order.        |
+| **`count()`**             | Returns the count of matching records.                   |
 
 ---
 
@@ -188,9 +206,12 @@ const db = createReactiveDB({
 
 // Query using the standard async method
 const adults = await db.users.getAllFromIndex('byAge', IDBKeyRange.lowerBound(18));
+
+// Query using the query builder MVP
+const adultsViaBuilder = await db.users.where('byAge').aboveOrEqual(18).toArray();
 ```
 
-_(Note: Reactive `liveQueryByIndex` is coming in Phase 3!)_
+_(Note: Reactive indexed queries are still planned. The current query builder is core-only.)_
 
 ### SSR Safety
 
@@ -222,7 +243,8 @@ For continuous validation, the CI workflow runs:
 
 ## 🔮 Roadmap
 
-- [ ] **Query Builder:** Chainable query API (`where(index).equals(value)`).
+- [ ] **Reactive Indexed Queries:** Extend indexed queries into the Svelte reactive layer.
+- [ ] **Advanced Query Builder:** Add richer operators and collection-style pipelines.
 - [ ] **Transactions:** Multi-store atomic operations with auto-rollback.
 - [ ] **Bulk Operations:** `addMany`, `putMany`, and `deleteMany`.
 - [ ] **Cross-tab Sync:** Automatic reactivity across different browser tabs using `BroadcastChannel`.
