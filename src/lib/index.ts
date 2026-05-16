@@ -15,6 +15,7 @@ export type {
 	DatabaseConfig,
 	Database,
 	IStore,
+	IQueryBuilder,
 	SSRStrategy,
 	ChangeEvent,
 	ChangeType,
@@ -23,6 +24,8 @@ export type {
 	WithId,
 	WithoutId
 } from './core/types.js';
+
+export { QueryBuilder } from './core/query-builder.js';
 
 // ─── Errors ───────────────────────────────────────────────────
 export {

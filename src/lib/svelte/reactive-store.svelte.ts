@@ -7,7 +7,7 @@
  * Must live in a .svelte.ts file for runes compilation.
  */
 
-import type { IStore, ILiveQuery, StoreConfig } from '../core/types.js';
+import type { IQueryBuilder, IStore, ILiveQuery } from '../core/types.js';
 import type { ChangeNotifier } from '../core/change-notifier.js';
 import { LiveQuery } from './live-query.svelte.js';
 
@@ -53,6 +53,10 @@ export class ReactiveStore<T> {
 		count?: number
 	): Promise<T[]> {
 		return this.store.getAllFromIndex(indexName, query, count);
+	}
+
+	where(indexName: string): IQueryBuilder<T> {
+		return this.store.where(indexName);
 	}
 
 	delete(key: IDBValidKey): Promise<void> {

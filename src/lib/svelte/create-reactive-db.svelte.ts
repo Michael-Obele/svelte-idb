@@ -7,7 +7,7 @@
  * Must live in a .svelte.ts file for runes compilation.
  */
 
-import type { DBSchema, DatabaseConfig, ILiveQuery } from '../core/types.js';
+import type { DBSchema, DatabaseConfig, ILiveQuery, IQueryBuilder } from '../core/types.js';
 import type { ChangeNotifier } from '../core/change-notifier.js';
 import { createDB } from '../core/database.js';
 import { ReactiveStore } from './reactive-store.svelte.js';
@@ -60,6 +60,7 @@ export function createReactiveDB<TSchema extends DBSchema>(
 			get: (k: IDBValidKey) => Promise<unknown>;
 			getAll: () => Promise<unknown[]>;
 			getAllFromIndex: (i: string, q?: IDBValidKey | IDBKeyRange, c?: number) => Promise<unknown[]>;
+			where: (indexName: string) => IQueryBuilder<unknown>;
 			delete: (k: IDBValidKey) => Promise<void>;
 			clear: () => Promise<void>;
 			count: () => Promise<number>;

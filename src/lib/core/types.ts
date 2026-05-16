@@ -74,6 +74,23 @@ export type ChangeSubscriber = (event: ChangeEvent) => void;
 
 // ─── Store Interface ──────────────────────────────────────────
 
+export interface IQueryBuilder<T> {
+	equals(value: IDBValidKey): IQueryBuilder<T>;
+	between(
+		lower: IDBValidKey,
+		upper: IDBValidKey,
+		lowerOpen?: boolean,
+		upperOpen?: boolean
+	): IQueryBuilder<T>;
+	above(value: IDBValidKey): IQueryBuilder<T>;
+	aboveOrEqual(value: IDBValidKey): IQueryBuilder<T>;
+	below(value: IDBValidKey): IQueryBuilder<T>;
+	belowOrEqual(value: IDBValidKey): IQueryBuilder<T>;
+	toArray(): Promise<T[]>;
+	first(): Promise<T | undefined>;
+	count(): Promise<number>;
+}
+
 /** Public interface for a typed object store. */
 export interface IStore<T> {
 	readonly storeName: string;
@@ -86,6 +103,7 @@ export interface IStore<T> {
 		query?: IDBValidKey | IDBKeyRange,
 		count?: number
 	): Promise<T[]>;
+	where(indexName: string): IQueryBuilder<T>;
 	delete(key: IDBValidKey): Promise<void>;
 	clear(): Promise<void>;
 	count(): Promise<number>;

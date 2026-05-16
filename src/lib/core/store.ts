@@ -9,6 +9,7 @@ import type { IStore, StoreConfig } from './types.js';
 import type { ChangeNotifier } from './change-notifier.js';
 import { prepareForInsert } from '../utils/prepare-value.js';
 import { wrapIDBError } from './errors.js';
+import { QueryBuilder } from './query-builder.js';
 
 export class Store<T> implements IStore<T> {
 	readonly storeName: string;
@@ -131,6 +132,11 @@ export class Store<T> implements IStore<T> {
 		} catch (error) {
 			throw wrapIDBError(error, `${this.storeName}.getAllFromIndex`);
 		}
+	}
+
+	where(indexName: string): QueryBuilder<T> {
+		this.log('where', indexName);
+		return new QueryBuilder<T>(this.storeName, indexName, this.dbPromise);
 	}
 
 	/**

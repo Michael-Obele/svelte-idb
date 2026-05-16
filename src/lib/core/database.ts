@@ -5,7 +5,7 @@
  * Opens an IndexedDB connection, applies schema, creates typed Store instances.
  */
 
-import type { DBSchema, DatabaseConfig, Database, IStore } from './types.js';
+import type { DBSchema, DatabaseConfig, Database, IQueryBuilder, IStore } from './types.js';
 import { Store } from './store.js';
 import { ChangeNotifier } from './change-notifier.js';
 import { applySchema } from './schema-manager.js';
@@ -126,6 +126,23 @@ function createSSRDatabase<TSchema extends DBSchema>(
 	config: DatabaseConfig<TSchema>,
 	_notifier: ChangeNotifier
 ): Database<TSchema> {
+	const createSSRQueryBuilder = <T>(storeName: string): IQueryBuilder<T> => {
+		const builder: IQueryBuilder<T> = {
+			equals: () => builder,
+			between: () => builder,
+			above: () => builder,
+			aboveOrEqual: () => builder,
+			below: () => builder,
+			belowOrEqual: () => builder,
+			toArray: () => Promise.resolve(handleSSR(config.ssr, `${storeName}.where.toArray`, [])),
+			first: () =>
+				Promise.resolve(handleSSR(config.ssr, `${storeName}.where.first`, undefined as T | undefined)),
+			count: () => Promise.resolve(handleSSR(config.ssr, `${storeName}.where.count`, 0))
+		};
+
+		return builder;
+	};
+
 	const ssrStore: IStore<unknown> = {
 		storeName: '',
 		add: () => Promise.resolve(handleSSR(config.ssr, 'add', 0 as IDBValidKey)),
@@ -133,6 +150,7 @@ function createSSRDatabase<TSchema extends DBSchema>(
 		get: () => Promise.resolve(handleSSR(config.ssr, 'get', undefined)),
 		getAll: () => Promise.resolve(handleSSR(config.ssr, 'getAll', [])),
 		getAllFromIndex: () => Promise.resolve(handleSSR(config.ssr, 'getAllFromIndex', [])),
+		where: (indexName: string) => createSSRQueryBuilder(indexName),
 		delete: () => Promise.resolve(handleSSR(config.ssr, 'delete', undefined)),
 		clear: () => Promise.resolve(handleSSR(config.ssr, 'clear', undefined)),
 		count: () => Promise.resolve(handleSSR(config.ssr, 'count', 0))
@@ -141,7 +159,11 @@ function createSSRDatabase<TSchema extends DBSchema>(
 	const stores: Record<string, IStore<unknown>> = {};
 
 	for (const name of Object.keys(config.stores)) {
-		stores[name] = { ...ssrStore, storeName: name };
+		stores[name] = {
+			...ssrStore,
+			storeName: name,
+			where: (indexName: string) => createSSRQueryBuilder(`${name}.where(${indexName})`)
+		};
 	}
 
 	const database = {
