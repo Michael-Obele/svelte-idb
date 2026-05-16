@@ -43,9 +43,9 @@
 ## 📦 Installation
 
 ```bash
-npm install svelte-idb
-# or
 bun add svelte-idb
+# or
+npm install svelte-idb
 # or
 pnpm add svelte-idb
 ```
@@ -207,16 +207,16 @@ Because `svelte-idb` is designed for SvelteKit, rendering on the server (SSR) wi
 The project uses Vitest Browser Mode with Playwright for real browser IndexedDB coverage.
 
 ```bash
-npm install
-npx playwright install chromium
-npm run test:browser
+bun install
+bunx playwright install chromium
+bun run test:browser
 ```
 
 For continuous validation, the CI workflow runs:
 
-- `npm run check`
-- `npm run package`
-- `npm run test:browser`
+- `bun run check`
+- `bun run package`
+- `bun run test:browser`
 
 ---
 
