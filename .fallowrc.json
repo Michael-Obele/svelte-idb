@@ -1,0 +1,18 @@
+{
+	"$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+	"entry": ["src/index.{ts,tsx,js,jsx}", "src/main.{ts,tsx,js,jsx}"],
+	"ignorePatterns": ["src/routes/ui/**"],
+	"duplicates": {
+		"mode": "mild",
+		"minTokens": 80,
+		"minLines": 15,
+		"ignoreImports": true,
+		"skipLocal": true,
+		"ignoreDefaults": true
+	},
+	"dynamicallyLoaded": ["src/lib/types/**", "**/*.d.ts"], // preferred over ignorePatterns
+	"rules": {
+		"unused-dependencies": "warn", // or "off" if you prefer
+		"unused-dev-dependencies": "off"
+	}
+}
