@@ -519,10 +519,95 @@ console.log(\`\${total} users in database\`);`
 						type: 'Promise<T[]>',
 						description: 'Query records via a secondary index'
 					},
+					{
+						name: 'where(indexName)',
+						type: 'IQueryBuilder<T>',
+						description: 'Create a chainable index query builder'
+					},
 					{ name: 'delete(key)', type: 'Promise<void>', description: 'Remove a record by key' },
 					{ name: 'clear()', type: 'Promise<void>', description: 'Remove all records' },
 					{ name: 'count()', type: 'Promise<number>', description: 'Count total records' }
 				]
+			}
+		]
+	},
+	{
+		slug: 'query-builder',
+		title: 'Query Builder',
+		description: 'Fluent index filtering with equals, ranges, and counts.',
+		category: 'Core API',
+		order: 12,
+		sections: [
+			{
+				heading: 'Overview',
+				text: 'The query builder is returned by where(indexName) on any store. It lets you chain index filters before executing a query with toArray(), first(), or count(). Use it for reusable lookups and range queries when getAllFromIndex() is too rigid.'
+			},
+			{
+				heading: 'Usage',
+				code: {
+					title: 'query-builder.ts',
+					language: 'typescript',
+					code: `const adults = await db.users.where('byAge').aboveOrEqual(18).toArray();
+
+const firstAdult = await db.users.where('byAge').aboveOrEqual(18).first();
+
+const totalAdults = await db.users.where('byAge').between(18, 64).count();`
+				}
+			},
+			{
+				heading: 'QueryBuilder API',
+				apiTable: [
+					{
+						name: 'equals(value)',
+						type: 'QueryBuilder<T>',
+						description: 'Match a single index value'
+					},
+					{
+						name: 'between(lower, upper, lowerOpen?, upperOpen?)',
+						type: 'QueryBuilder<T>',
+						description: 'Match values within an index range'
+					},
+					{
+						name: 'above(value)',
+						type: 'QueryBuilder<T>',
+						description: 'Match values greater than the given value'
+					},
+					{
+						name: 'aboveOrEqual(value)',
+						type: 'QueryBuilder<T>',
+						description: 'Match values greater than or equal to the given value'
+					},
+					{
+						name: 'below(value)',
+						type: 'QueryBuilder<T>',
+						description: 'Match values less than the given value'
+					},
+					{
+						name: 'belowOrEqual(value)',
+						type: 'QueryBuilder<T>',
+						description: 'Match values less than or equal to the given value'
+					},
+					{
+						name: 'toArray()',
+						type: 'Promise<T[]>',
+						description: 'Resolve all matching records'
+					},
+					{
+						name: 'first()',
+						type: 'Promise<T | undefined>',
+						description: 'Resolve the first matching record'
+					},
+					{
+						name: 'count()',
+						type: 'Promise<number>',
+						description: 'Count the matching records'
+					}
+				]
+			},
+			{
+				heading: 'Notes',
+				text: 'QueryBuilder works on both core stores and reactive stores, since createReactiveDB() forwards the same query API through ReactiveStore.',
+				note: 'Use getAllFromIndex() when you only need a single one-shot index lookup. Use where() when you need reusable filters or range operators.'
 			}
 		]
 	},
@@ -1184,7 +1269,7 @@ await db.users.add({ name: 'Alice' });
 	{
 		slug: 'coming-soon',
 		title: 'Coming Soon',
-		description: 'Exciting new features and improvements in active development.',
+		description: 'Exciting new features and improvements still in active development.',
 		category: 'Roadmap',
 		order: 100,
 		sections: [
@@ -1192,21 +1277,6 @@ await db.users.add({ name: 'Alice' });
 				heading: 'v2 Features in Development',
 				text: "We're actively working on the following features to make svelte-idb even more powerful and developer-friendly. Check back soon for updates!",
 				note: 'This roadmap is subject to change based on community feedback and priorities.'
-			},
-			{
-				heading: 'Query Builder',
-				text: 'A fluent, TypeScript-safe query builder API for more expressive database queries.',
-				code: {
-					title: 'query-builder.ts',
-					language: 'typescript',
-					code: `// Coming soon
-const results = await db.users
-  .where('age').greaterThan(18)
-  .and('status').equals('active')
-  .orderBy('name')
-  .limit(10)
-  .toArray();`
-				}
 			},
 			{
 				heading: 'Transaction Support',
