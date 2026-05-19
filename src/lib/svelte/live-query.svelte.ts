@@ -11,6 +11,7 @@ import type { ChangeNotifier } from '../core/change-notifier.js';
 import type { ILiveQuery } from '../core/types.js';
 import { isBrowser } from '../utils/ssr.js';
 
+/** @public */
 export class LiveQuery<T> implements ILiveQuery<T> {
 	current = $state<T>() as T;
 	loading = $state(true);

@@ -13,6 +13,7 @@ import { LiveQuery } from './live-query.svelte.js';
 
 /**
  * Wraps a core Store<T> with Svelte 5 reactive live query methods.
+ * @public
  */
 export class ReactiveStore<T> {
 	private store: IStore<T>;

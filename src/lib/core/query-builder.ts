@@ -2,6 +2,7 @@ import type { IQueryBuilder } from './types.js';
 
 import { wrapIDBError } from './errors.js';
 
+/** @public */
 export class QueryBuilder<T> implements IQueryBuilder<T> {
 	private storeName: string;
 	private indexName: string;
