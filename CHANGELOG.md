@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.6](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.5...svelte-idb-v0.1.6) (2026-05-19)
+
+
+### Features
+
+* add .fallowrc configuration and update .gitignore to include .fallow/ ([86f83c9](https://github.com/Michael-Obele/svelte-idb/commit/86f83c9fa95483f72ed4b6ad804862fefa8d74f4))
+* add [@public](https://github.com/public) JSDoc annotation to QueryBuilder, LiveQuery, and ReactiveStore classes ([ac16b79](https://github.com/Michael-Obele/svelte-idb/commit/ac16b791c78405e19cffef5b6abfc6f74f36db31))
+* add indexed query builder ([61bed23](https://github.com/Michael-Obele/svelte-idb/commit/61bed234d041efb8f60a58797bc3504f64c1f702)), closes [#19](https://github.com/Michael-Obele/svelte-idb/issues/19)
+* add query builder documentation and API details ([82ecd6a](https://github.com/Michael-Obele/svelte-idb/commit/82ecd6a3dec4a67c21d18f9880df70f485ca0212))
+* add rule to disable unused class members warning in .fallowrc ([973b32b](https://github.com/Michael-Obele/svelte-idb/commit/973b32b675fa5f4eae1b3546b910c4fab406aef3))
+* update entry points in .fallowrc for improved module resolution ([d4cbbde](https://github.com/Michael-Obele/svelte-idb/commit/d4cbbde8c48851164f9012aaf2ae711b94b2252f))
+
 ## [0.1.5](https://github.com/Michael-Obele/svelte-idb/compare/svelte-idb-v0.1.4...svelte-idb-v0.1.5) (2026-03-07)
 
 
